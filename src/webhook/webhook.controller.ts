@@ -25,11 +25,16 @@ export class WebhookController {
     switch (prompt) {
       case "/start":
         message = await this.gptService.generateText(prompt);
-        this.mongodbService.saveChat(telegramWebhookPayload);
+        this.mongodbService.saveChat(telegramWebhookPayload, message);
         break;
-      default: 
-        message = await this.gptService.generateText(prompt);
-        this.mongodbService.saveChat(telegramWebhookPayload);
+      case "/end":
+        message = "Goodbye!, send /start to start a new session.";
+        this.mongodbService.removeChat(telegramWebhookPayload);
+        break;
+      default:
+        const chat = await this.mongodbService.getChat(telegramWebhookPayload);
+        message = await this.gptService.generateText(prompt, chat);
+        this.mongodbService.saveChat(telegramWebhookPayload, message);
         break;
     }
 

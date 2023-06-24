@@ -12,15 +12,17 @@ export class GptService {
     this.openai = new OpenAIApi(configuration);
   }
 
-  async generateText(prompt: string): Promise<string> {
+  async generateText(prompt: string, chat?: any): Promise<string> {
     try {
+      const oldMessages = chat?.messages || [];
+      const messages = [...oldMessages, { role: "user", content: prompt }];
       const chatCompletion = await this.openai.createChatCompletion({
         model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: prompt }],
         max_tokens: 500,
+        messages,
       });
-
-      const message = chatCompletion.data.choices[0].message.content;
+      const choices = chatCompletion.data.choices;
+      const message = choices[choices.length - 1].message.content;
       return message;
     } catch (error) {
       console.log(error);
