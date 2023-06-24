@@ -24,7 +24,7 @@ export class WebhookController {
     const prompt = telegramWebhookPayload?.message?.text;
     const command = prompt?.split(" ")[0];
     let message: string;
-    let image: string;
+    let imageUrl: string;
 
     switch (command) {
       case "/start":
@@ -32,7 +32,20 @@ export class WebhookController {
         this.mongodbService.saveChat(telegramWebhookPayload, message);
         break;
       case "/imagine":
-        image = await this.ImageGeneratorService.generateByPrompt(prompt);
+        imageUrl = await this.ImageGeneratorService.generateByPrompt(prompt);
+        this.mongodbService.saveImage(telegramWebhookPayload, imageUrl);
+        break;
+      case "/imagine_variation":
+        const originalImageUrl = await this.mongodbService.getImage(
+          telegramWebhookPayload
+        );
+        if(!originalImageUrl) {
+          message = "No image found, send /imagine to generate one.";
+          break;
+        } 
+        imageUrl = await this.ImageGeneratorService.generateVariation(
+          originalImageUrl
+        );
         break;
       case "/end":
         message = "Goodbye!, send /start to start a new session.";
@@ -48,7 +61,7 @@ export class WebhookController {
     const result: WebhookResultDto = {
       chatId: telegramWebhookPayload.message.chat.id,
       message,
-      image,
+      imageUrl,
     };
 
     await this.webhookService.postWebhook(result);

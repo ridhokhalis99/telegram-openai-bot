@@ -79,4 +79,53 @@ export class MongodbService {
       await this.mongoClient.close();
     }
   }
+
+  async saveImage(
+    telegramWebhookPayload: TelegramWebhookPayload,
+    imageUrl: string
+  ): Promise<void> {
+    try {
+      await this.mongoClient.connect();
+      const database = this.mongoClient.db("chatbot");
+      const collection = database.collection("chat");
+      const { id } = telegramWebhookPayload.message.chat;
+      const filter = { chatId: id };
+
+      const oneDay = 24 * 60 * 60 * 1000;
+      const expiration = new Date(Date.now() + oneDay); 
+      const update = {
+        $set: {
+          imageUrl,
+          expiration,
+        },
+      };
+      const options = { upsert: true };
+      await collection.updateOne(filter, update, options);
+    } catch (error) {
+      console.log(error);
+      throw new Error("Failed to connect to MongoDB.");
+    } finally {
+      await this.mongoClient.close();
+    }
+  
+  }
+
+  async getImage(
+    telegramWebhookPayload: TelegramWebhookPayload
+  ): Promise<string> {
+    try {
+      await this.mongoClient.connect();
+      const database = this.mongoClient.db("chatbot");
+      const collection = database.collection("chat");
+      const { id } = telegramWebhookPayload.message.chat;
+      const filter = { chatId: id };
+      const chat = await collection.findOne(filter);
+      return chat?.imageUrl;
+    } catch (error) {
+      console.log(error);
+      throw new Error("Failed to connect to MongoDB.");
+    } finally {
+      await this.mongoClient.close();
+    }
+  }
 }
