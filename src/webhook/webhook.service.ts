@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import * as TelegramBot from 'node-telegram-bot-api'
-import { WebhookResultDto } from './dto/webhook-telegram-bot';
+import { Injectable } from "@nestjs/common";
+import * as TelegramBot from "node-telegram-bot-api";
+import { WebhookResultDto } from "./dto/webhook-telegram-bot";
 
 @Injectable()
 export class WebhookService {
