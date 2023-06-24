@@ -10,7 +10,8 @@ export class WebhookService {
   }
 
   async postWebhook(result: WebhookResultDto) {
-    const { chatId, message } = result;
+    const { chatId, image, message } = result;
+    if (image) return this.bot.sendPhoto(chatId, image);
     this.bot.sendMessage(chatId, message);
   }
 }

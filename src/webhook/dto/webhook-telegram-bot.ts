@@ -15,4 +15,5 @@ export interface TelegramWebhookPayload {
 export class WebhookResultDto {
   chatId: number;
   message: string;
+  image?: string;
 }
