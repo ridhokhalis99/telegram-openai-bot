@@ -7,6 +7,8 @@ import {
 import { GptService } from "src/gpt/gpt.service";
 import { MongodbService } from "src/mongodb/mongodb.service";
 import { ImageGeneratorService } from "src/image-generator/image-generator.service";
+import { TelegramService } from "src/telegram/telegram.service";
+import { CloudVisionService } from "src/cloud-vision/cloud-vision.service";
 
 @Controller("webhook")
 export class WebhookController {
@@ -14,7 +16,9 @@ export class WebhookController {
     private readonly webhookService: WebhookService,
     private readonly gptService: GptService,
     private readonly mongodbService: MongodbService,
-    private readonly ImageGeneratorService: ImageGeneratorService
+    private readonly imageGeneratorService: ImageGeneratorService,
+    private readonly cloudVisionService: CloudVisionService,
+    private readonly telegramService: TelegramService
   ) {}
 
   @Post("/")
@@ -22,7 +26,9 @@ export class WebhookController {
     @Body() telegramWebhookPayload: TelegramWebhookPayload
   ): Promise<void> {
     const prompt = telegramWebhookPayload?.message?.text;
-    const command = prompt?.split(" ")[0];
+    const caption = telegramWebhookPayload?.message?.caption;
+    const command = prompt?.split(" ")[0] || caption.split(" ")[0];
+    const photo = telegramWebhookPayload?.message?.photo;
     let message: string;
     let imageUrl: string;
 
@@ -32,20 +38,34 @@ export class WebhookController {
         this.mongodbService.saveChat(telegramWebhookPayload, message);
         break;
       case "/imagine":
-        imageUrl = await this.ImageGeneratorService.generateByPrompt(prompt);
+        imageUrl = await this.imageGeneratorService.generateByPrompt(prompt);
         this.mongodbService.saveImage(telegramWebhookPayload, imageUrl);
         break;
       case "/imagine_variation":
         const originalImageUrl = await this.mongodbService.getImage(
           telegramWebhookPayload
         );
-        if(!originalImageUrl) {
+        if (!originalImageUrl) {
           message = "No image found, send /imagine to generate one.";
           break;
-        } 
-        imageUrl = await this.ImageGeneratorService.generateVariation(
+        }
+        imageUrl = await this.imageGeneratorService.generateVariation(
           originalImageUrl
         );
+        break;
+      case "/scan":
+        if (!photo) break;
+        const imageFile = await this.telegramService.getImageFile(
+          photo[photo.length - 1].file_id
+        );
+        const scannedTexts = await this.cloudVisionService.detectText(
+          imageFile
+        );
+        message = await this.gptService.generateTextByImage(
+          caption,
+          scannedTexts
+        );
+        this.mongodbService.saveChat(telegramWebhookPayload, message);
         break;
       case "/end":
         message = "Goodbye!, send /start to start a new session.";

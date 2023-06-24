@@ -25,7 +25,27 @@ export class GptService {
       const message = choices[choices.length - 1].message.content;
       return message;
     } catch (error) {
-      console.log(error);
+      throw new Error("Failed to connect to GPT.");
+    }
+  }
+
+  async generateTextByImage(
+    prompt: string,
+    scannedTexts: string
+  ): Promise<string> {
+    try {
+      const promptWithoutCommand = prompt?.split(" ")?.slice(1)?.join(" ");
+      const newMessage = promptWithoutCommand + "\n" + scannedTexts;
+      const imageCompletion = await this.openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        max_tokens: 500,
+        messages: [{ role: "user", content: newMessage }],
+      });
+      const choices = imageCompletion.data.choices;
+      const message = choices[choices.length - 1].message.content;
+      return message;
+    } catch (error) {
+      console.log(error.message);
       throw new Error("Failed to connect to GPT.");
     }
   }

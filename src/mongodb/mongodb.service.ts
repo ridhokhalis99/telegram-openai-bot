@@ -21,7 +21,6 @@ export class MongodbService {
       const chat = await collection.findOne(filter);
       return chat;
     } catch (error) {
-      console.log(error);
       throw new Error("Failed to connect to MongoDB.");
     } finally {
       await this.mongoClient.close();
@@ -37,9 +36,13 @@ export class MongodbService {
       const database = this.mongoClient.db("chatbot");
       const collection = database.collection("chat");
       const { first_name, last_name, id } = telegramWebhookPayload.message.chat;
+      const messageContent =
+        telegramWebhookPayload.message.text ||
+        telegramWebhookPayload.message.caption;
+      if (!messageContent) return;
       const newMessage = {
         role: "user",
-        content: telegramWebhookPayload.message.text,
+        content: messageContent,
       };
       const gptMessage = {
         role: "assistant",
@@ -55,7 +58,6 @@ export class MongodbService {
       const options = { upsert: true };
       await collection.updateOne(filter, update, options);
     } catch (error) {
-      console.log(error);
       throw new Error("Failed to connect to MongoDB.");
     } finally {
       await this.mongoClient.close();
@@ -73,7 +75,6 @@ export class MongodbService {
       const filter = { chatId: id };
       await collection.deleteOne(filter);
     } catch (error) {
-      console.log(error);
       throw new Error("Failed to connect to MongoDB.");
     } finally {
       await this.mongoClient.close();
@@ -92,7 +93,7 @@ export class MongodbService {
       const filter = { chatId: id };
 
       const oneDay = 24 * 60 * 60 * 1000;
-      const expiration = new Date(Date.now() + oneDay); 
+      const expiration = new Date(Date.now() + oneDay);
       const update = {
         $set: {
           imageUrl,
@@ -102,12 +103,10 @@ export class MongodbService {
       const options = { upsert: true };
       await collection.updateOne(filter, update, options);
     } catch (error) {
-      console.log(error);
       throw new Error("Failed to connect to MongoDB.");
     } finally {
       await this.mongoClient.close();
     }
-  
   }
 
   async getImage(
@@ -122,7 +121,6 @@ export class MongodbService {
       const chat = await collection.findOne(filter);
       return chat?.imageUrl;
     } catch (error) {
-      console.log(error);
       throw new Error("Failed to connect to MongoDB.");
     } finally {
       await this.mongoClient.close();

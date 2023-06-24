@@ -1,3 +1,10 @@
+export interface Photo {
+  file_id: string;
+  file_unique_id: string;
+  file_size: number;
+  width: number;
+  height: number;
+}
 export interface TelegramWebhookPayload {
   update_id: number;
   message: {
@@ -9,6 +16,8 @@ export interface TelegramWebhookPayload {
       last_name: string;
       type: string;
     };
+    photo: Photo[];
+    caption: string;
   };
 }
 

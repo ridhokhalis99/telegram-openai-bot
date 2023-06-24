@@ -25,7 +25,6 @@ export class ImageGeneratorService {
       const imageUrl = response.data.data[0].url;
       return imageUrl;
     } catch (error) {
-      console.log(error);
       throw new Error("Failed to connect to GPT.");
     }
   }
@@ -44,7 +43,6 @@ export class ImageGeneratorService {
       const imageUrl = variationResponse.data.data[0].url;
       return imageUrl;
     } catch (error) {
-      console.log(error);
       throw new Error("Failed to connect to GPT.");
     }
   }
