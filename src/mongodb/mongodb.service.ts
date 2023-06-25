@@ -18,7 +18,7 @@ export class MongodbService {
       const collection = database.collection("chat");
       const { id } = telegramWebhookPayload.message.chat;
       const filter = { chatId: id };
-      const chat = await collection.findOne(filter) || []
+      const chat = (await collection.findOne(filter)) || [];
       return chat;
     } catch (error) {
       throw new Error("Failed to connect to MongoDB.");
@@ -58,7 +58,7 @@ export class MongodbService {
       const options = { upsert: true };
       await collection.updateOne(filter, update, options);
     } catch (error) {
-      throw new Error("Failed to connect to MongoDB.");
+      console.log(error.message, "Failed to connect to MongoDB.");
     } finally {
       await this.mongoClient.close();
     }
@@ -75,7 +75,7 @@ export class MongodbService {
       const filter = { chatId: id };
       await collection.deleteOne(filter);
     } catch (error) {
-      throw new Error("Failed to connect to MongoDB.");
+      console.log(error.message, "Failed to connect to MongoDB.");
     } finally {
       await this.mongoClient.close();
     }
@@ -103,7 +103,7 @@ export class MongodbService {
       const options = { upsert: true };
       await collection.updateOne(filter, update, options);
     } catch (error) {
-      throw new Error("Failed to connect to MongoDB.");
+      console.log(error.message, "Failed to connect to MongoDB.");
     } finally {
       await this.mongoClient.close();
     }
@@ -121,7 +121,7 @@ export class MongodbService {
       const chat = await collection.findOne(filter);
       return chat?.imageUrl;
     } catch (error) {
-      throw new Error("Failed to connect to MongoDB.");
+      console.log(error.message, "Failed to connect to MongoDB.");
     } finally {
       await this.mongoClient.close();
     }

@@ -25,7 +25,7 @@ export class GptService {
       const message = choices[choices.length - 1].message.content;
       return message;
     } catch (error) {
-      throw new Error("Failed to connect to GPT.");
+      console.log(error.message, "Failed to connect to GPT.");
     }
   }
 
@@ -45,8 +45,7 @@ export class GptService {
       const message = choices[choices.length - 1].message.content;
       return message;
     } catch (error) {
-      console.log(error.message);
-      throw new Error("Failed to connect to GPT.");
+      console.log(error.message, "Failed to connect to GPT.");
     }
   }
 }

@@ -39,8 +39,9 @@ export class WebhookController {
           this.mongodbService.saveChat(telegramWebhookPayload, message);
           break;
         case "/help":
-          message = "/start - Start a new session \n/help - Show this help message\n/imagine - Generate an image based on your prompt\n/imagine_variation - Generate an image based on the last generated image\n/scan - Scan an image and generate text based on the image\n/end - End the current session"
-        break
+          message =
+            "/start - Start a new session \n/help - Show this help message\n/imagine - Generate an image based on your prompt\n/imagine_variation - Generate an image based on the last generated image\n/scan - Scan an image and generate text based on the image\n/end - End the current session";
+          break;
         case "/imagine":
           imageUrl = await this.imageGeneratorService.generateByPrompt(prompt);
           this.mongodbService.saveImage(telegramWebhookPayload, imageUrl);
@@ -92,7 +93,7 @@ export class WebhookController {
 
       await this.webhookService.postWebhook(result);
     } catch (error) {
-      console.log("Error:",error)
+      console.log("Error:", error);
     }
   }
 }

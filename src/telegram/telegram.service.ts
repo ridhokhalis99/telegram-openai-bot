@@ -16,7 +16,7 @@ export class TelegramService {
       const imageFile = Buffer.from(responseImageFile.data, "binary");
       return imageFile;
     } catch (error) {
-      throw Error("Error in TelegramService");
+      console.log(error.message, "Failed to connect to Telegram.");
     }
   }
 }
