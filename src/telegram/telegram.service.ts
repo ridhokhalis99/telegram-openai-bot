@@ -23,9 +23,8 @@ export class TelegramService {
     const filePath = responseFilePath.data.result.file_path;
     const responseVoiceFile = await axios.get(
       `https://api.telegram.org/file/bot${process.env.TELEGRAM_BOT_API_KEY}/${filePath}`,
-      { responseType: "arraybuffer" } 
+      { responseType: "arraybuffer" }
     );
-    // TODO: Convert to mp3
     const voiceFile = Buffer.from(responseVoiceFile.data, "binary");
     return voiceFile;
   }

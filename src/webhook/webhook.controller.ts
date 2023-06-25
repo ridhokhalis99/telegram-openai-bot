@@ -23,6 +23,93 @@ export class WebhookController {
     private readonly audioProcessingService: AudioProcessingService
   ) {}
 
+  private async handleStartCommand(
+    telegramWebhookPayload: TelegramWebhookPayload
+  ): Promise<string> {
+    const prompt = telegramWebhookPayload?.message?.text;
+    const message = await this.gptService.generateText(prompt);
+    await this.mongodbService.saveChat(telegramWebhookPayload, message);
+    return message;
+  }
+
+  private async handleImagineCommand(
+    telegramWebhookPayload: TelegramWebhookPayload
+  ): Promise<string> {
+    const prompt = telegramWebhookPayload?.message?.text;
+    const imageUrl = await this.imageGeneratorService.generateByPrompt(prompt);
+    await this.mongodbService.saveImage(telegramWebhookPayload, imageUrl);
+    return imageUrl;
+  }
+
+  private async handleImagineVariationCommand(
+    telegramWebhookPayload: TelegramWebhookPayload
+  ): Promise<string> {
+    const originalImageUrl = await this.mongodbService.getImage(
+      telegramWebhookPayload
+    );
+    if (!originalImageUrl) {
+      return "No image found, send /imagine to generate one.";
+    }
+    const imageUrl = await this.imageGeneratorService.generateVariation(
+      originalImageUrl
+    );
+    return imageUrl;
+  }
+
+  private async handleScanCommand(
+    telegramWebhookPayload: TelegramWebhookPayload
+  ): Promise<string> {
+    const photo = telegramWebhookPayload?.message?.photo;
+    const caption = telegramWebhookPayload?.message?.caption;
+    if (!photo) return null;
+    const imageFile = await this.telegramService.getImageFile(
+      photo[photo.length - 1].file_id
+    );
+    const scannedTexts = await this.cloudVisionService.detectText(imageFile);
+    const message = await this.gptService.generateTextByImage(
+      caption,
+      scannedTexts
+    );
+    await this.mongodbService.saveChat(telegramWebhookPayload, message);
+    return message;
+  }
+
+  private async handleTranscribeCommand(
+    telegramWebhookPayload: TelegramWebhookPayload
+  ): Promise<string> {
+    const voice = telegramWebhookPayload?.message?.voice;
+    if (!voice) return null;
+    const chat = await this.mongodbService.getChat(telegramWebhookPayload);
+    const voiceBuffer = await this.telegramService.getVoiceFile(voice.file_id);
+    await this.audioProcessingService.convertOgaToMp3(
+      voiceBuffer,
+      telegramWebhookPayload
+    );
+    const transcribedText = await this.audioProcessingService.transcribeAudio(
+      telegramWebhookPayload
+    );
+    await this.audioProcessingService.removeAudioFiles(telegramWebhookPayload);
+    const message = await this.gptService.generateText(transcribedText, chat);
+    return message;
+  }
+
+  private async handleEndCommand(
+    telegramWebhookPayload: TelegramWebhookPayload
+  ): Promise<string> {
+    await this.mongodbService.removeChat(telegramWebhookPayload);
+    return "Goodbye!, send /start to start a new session.";
+  }
+
+  private async handleDefaultCommand(
+    telegramWebhookPayload: TelegramWebhookPayload
+  ): Promise<string> {
+    const prompt = telegramWebhookPayload?.message?.text;
+    const chat = await this.mongodbService.getChat(telegramWebhookPayload);
+    const message = await this.gptService.generateText(prompt, chat);
+    await this.mongodbService.saveChat(telegramWebhookPayload, message);
+    return message;
+  }
+
   @Post("/")
   async postWebhook(
     @Body() telegramWebhookPayload: TelegramWebhookPayload
@@ -30,76 +117,52 @@ export class WebhookController {
     let command: string;
     const prompt = telegramWebhookPayload?.message?.text;
     const caption = telegramWebhookPayload?.message?.caption;
-    const photo = telegramWebhookPayload?.message?.photo;
     const voice = telegramWebhookPayload?.message?.voice;
 
     if (voice) command = "/transcribe";
     else command = prompt?.split(" ")[0] || caption?.split(" ")[0];
-    console.log("🚀 ~ file: webhook.controller.ts:38 ~ WebhookController ~ command:", command)
+
+    console.log("Command: ", command);
 
     let message: string;
     let imageUrl: string;
 
-    switch (command) {
-      case "/start":
-        message = await this.gptService.generateText(prompt);
-        this.mongodbService.saveChat(telegramWebhookPayload, message);
-        break;
-      case "/imagine":
-        imageUrl = await this.imageGeneratorService.generateByPrompt(prompt);
-        this.mongodbService.saveImage(telegramWebhookPayload, imageUrl);
-        break;
-      case "/imagine_variation":
-        const originalImageUrl = await this.mongodbService.getImage(
-          telegramWebhookPayload
-        );
-        if (!originalImageUrl) {
-          message = "No image found, send /imagine to generate one.";
+    try {
+      switch (command) {
+        case "/start":
+          message = await this.handleStartCommand(telegramWebhookPayload);
           break;
-        }
-        imageUrl = await this.imageGeneratorService.generateVariation(
-          originalImageUrl
-        );
-        break;
-      case "/scan":
-        if (!photo) break;
-        const imageFile = await this.telegramService.getImageFile(
-          photo[photo.length - 1].file_id
-        );
-        const scannedTexts = await this.cloudVisionService.detectText(
-          imageFile
-        );
-        message = await this.gptService.generateTextByImage(
-          caption,
-          scannedTexts
-        );
-        this.mongodbService.saveChat(telegramWebhookPayload, message);
-        break;
-      case "/transcribe":
-        if (!voice) break;
-        const voiceFile = await this.telegramService.getVoiceFile(
-          voice.file_id
-        );
-        const transcribedText = await this.audioProcessingService.transcribe(voiceFile);
+        case "/imagine":
+          imageUrl = await this.handleImagineCommand(telegramWebhookPayload);
+          break;
+        case "/imagine_variation":
+          imageUrl = await this.handleImagineVariationCommand(
+            telegramWebhookPayload
+          );
+          break;
+        case "/scan":
+          message = await this.handleScanCommand(telegramWebhookPayload);
+          break;
+        case "/transcribe":
+          message = await this.handleTranscribeCommand(telegramWebhookPayload);
+          break;
+        case "/end":
+          message = await this.handleEndCommand(telegramWebhookPayload);
+          break;
+        default:
+          message = await this.handleDefaultCommand(telegramWebhookPayload);
+          break;
+      }
 
-        break;
-      case "/end":
-        message = "Goodbye!, send /start to start a new session.";
-        this.mongodbService.removeChat(telegramWebhookPayload);
-        break;
-      default:
-        const chat = await this.mongodbService.getChat(telegramWebhookPayload);
-        message = await this.gptService.generateText(prompt, chat);
-        this.mongodbService.saveChat(telegramWebhookPayload, message);
-        break;
+      const result: WebhookResultDto = {
+        chatId: telegramWebhookPayload.message.chat.id,
+        message,
+        imageUrl,
+      };
+
+      await this.webhookService.postWebhook(result);
+    } catch (error) {
+      console.log("Error: ", error);
     }
-
-    const result: WebhookResultDto = {
-      chatId: telegramWebhookPayload.message.chat.id,
-      message,
-      imageUrl,
-    };
-
-    await this.webhookService.postWebhook(result);
   }
 }
