@@ -38,6 +38,16 @@ export class WebhookController {
           message = await this.gptService.generateText(prompt);
           this.mongodbService.saveChat(telegramWebhookPayload, message);
           break;
+        case "/help":
+          message = `
+            /start - Start a new session
+            /help - Show this help message
+            /imagine - Generate an image based on your prompt
+            /imagine_variation - Generate an image based on the last generated image
+            /scan - Scan an image and generate text based on the image
+            /end - End the current session
+          `
+        break
         case "/imagine":
           imageUrl = await this.imageGeneratorService.generateByPrompt(prompt);
           this.mongodbService.saveImage(telegramWebhookPayload, imageUrl);

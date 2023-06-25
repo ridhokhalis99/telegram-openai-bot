@@ -1,73 +1,69 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Telegram OpenAI Bot
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Telegram OpenAI Bot is a powerful Telegram bot built using NestJS that integrates with OpenAI's natural language processing capabilities. It provides conversational text generation, image creation using DALL-E, OCR using Cloud Vision, and temporary storage using MongoDB. This bot enables users to interact with OpenAI's GPT-3.5 model, generate images, extract text from images, and store temporary data for future use.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- **Conversational Text Generation:** The bot utilizes OpenAI's GPT-3.5 model to provide advanced natural language processing capabilities. Users can engage in conversational interactions with the bot, asking questions, seeking advice, or simply having a chat.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Image Generation with DALL-E:** Leveraging DALL-E, an AI model that generates images from textual descriptions, the bot can create unique and imaginative images based on user prompts. Users can provide a description or concept, and the bot will generate an image representing the idea.
 
-## Installation
+- **OCR with Google Cloud Vision:** The bot integrates with Google Cloud Vision OCR to extract text from images. Users can send images to the bot, and it will perform optical character recognition to extract any text present in the image. This feature is useful for digitizing printed text or capturing information from images.
 
-```bash
-$ npm install
+## Getting Started
+
+To set up and run the Telegram OpenAI Bot project, follow these steps:
+
+1. **Clone the Repository:** Clone the repository to your local machine.
+   git clone https://github.com/ridhokhalis99/telegram-openai-bot
+
+2. **Install Dependencies:** Navigate to the cloned directory and install the required dependencies.
+
+```
+   cd telegram-openai-bot
+   npm install
 ```
 
-## Running the app
+3. **Obtain API Keys:** Obtain the necessary API keys for OpenAI, MongoDB, Telegram Bot, and Google Cloud Vision OCR. Make sure to store the keys securely and update the configuration files accordingly.
 
-```bash
-# development
-$ npm run start
+4. **Configure MongoDB Connection:** Set up a local or remote MongoDB instance and update the MongoDB connection details in the project's configuration files.
 
-# watch mode
-$ npm run start:dev
+5. **Configure Telegram Bot API Token:** Create a new Telegram bot and obtain the API token. Update the token in the project's configuration files.
 
-# production mode
-$ npm run start:prod
+6. **Start the Bot:** Run the following command to start the bot:
+
+```
+   npm run start
 ```
 
-## Test
+7. **Interact with the Bot:** Start a conversation with the bot on Telegram and use the available commands and features by sending appropriate messages.
 
-```bash
-# unit tests
-$ npm run test
+## Usage
 
-# e2e tests
-$ npm run test:e2e
+The Telegram OpenAI Bot supports the following commands and interactions:
 
-# test coverage
-$ npm run test:cov
-```
+- `/start`: Start the conversation with the bot.
+- `/imagine [description]`: Generate an image based on the provided description or concept.
+- `/scan [description]`: Extract text from the provided image using optical character recognition and response to it.
+- `/help`: Get information on how to use the bot and its available commands.
+- `/end`: End the conversation with the bot.
 
-## Support
+## Contributing
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Contributions to the Telegram OpenAI Bot project are welcome! If you have ideas for new features, bug fixes, or improvements, please submit a pull request. Be sure to follow the project's code style and guidelines.
 
-## Stay in touch
+## Disclaimer
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Please note that the Telegram OpenAI Bot is an open-source project developed independently and is not officially affiliated with OpenAI, DALL-E, Google Cloud Vision, or Telegram. While the bot strives to provide accurate and useful information, it may not always generate the desired results or exhibit perfect accuracy.
+
+The bot's usage of OpenAI's GPT-3.5 model, DALL-E, and Google Cloud Vision OCR is subject to the terms and conditions set by the respective providers. Ensure that you comply with their usage policies and any applicable usage limits or costs.
+
+The developers of the Telegram OpenAI Bot are not responsible for any misuse, damages, or liabilities resulting from the use of this bot. Use it at your own risk.
+
+## Support and Feedback
+
+For support, bug reports, or feedback regarding the Telegram OpenAI Bot, please create an issue on the project's GitHub repository. The developers and the community will do their best to assist you.
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is licensed under the MIT License. Feel free to modify and distribute the codebase according to the terms of the license.
