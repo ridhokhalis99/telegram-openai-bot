@@ -40,7 +40,7 @@ export class MongodbService {
       const messageContent =
         telegramWebhookPayload.message.text ||
         telegramWebhookPayload.message.caption ||
-        transription
+        transription;
       if (!messageContent) return;
       const newMessage = {
         role: "user",

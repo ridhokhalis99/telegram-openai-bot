@@ -32,6 +32,18 @@ export class WebhookController {
     return message;
   }
 
+  private handleHelpCommand(): string {
+    const messages = [
+      "/start - Start a new session",
+      "/help - Show this help message",
+      "/imagine - Generate an image based on your prompt",
+      "/imagine_variation - Generate an image based on the last generated image",
+      "/scan - Scan an image and generate text based on the image",
+      "/end - End the current session",
+    ];
+    return messages.join("\n");
+  }
+
   private async handleImagineCommand(
     telegramWebhookPayload: TelegramWebhookPayload
   ): Promise<string> {
@@ -90,7 +102,11 @@ export class WebhookController {
     );
     await this.audioProcessingService.removeAudioFiles(telegramWebhookPayload);
     const message = await this.gptService.generateText(transcribedText, chat);
-    await this.mongodbService.saveChat(telegramWebhookPayload, message, transcribedText);
+    await this.mongodbService.saveChat(
+      telegramWebhookPayload,
+      message,
+      transcribedText
+    );
     return message;
   }
 
@@ -131,6 +147,9 @@ export class WebhookController {
       switch (command) {
         case "/start":
           message = await this.handleStartCommand(telegramWebhookPayload);
+          break;
+        case "/help":
+          message = this.handleHelpCommand();
           break;
         case "/imagine":
           imageUrl = await this.handleImagineCommand(telegramWebhookPayload);
