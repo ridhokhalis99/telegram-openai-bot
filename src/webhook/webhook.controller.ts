@@ -99,8 +99,7 @@ export class WebhookController {
 
       await this.webhookService.postWebhook(result);
     } catch (error) {
-      console.log("🚀 ~ file: webhook.controller.ts:102 ~ WebhookController ~ error:", error)
-      throw Error("Error in WebhookController");
+      console.log("Error:",error)
     }
   }
 }
