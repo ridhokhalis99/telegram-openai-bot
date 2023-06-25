@@ -18,7 +18,7 @@ export class MongodbService {
       const collection = database.collection("chat");
       const { id } = telegramWebhookPayload.message.chat;
       const filter = { chatId: id };
-      const chat = await collection.findOne(filter);
+      const chat = await collection.findOne(filter) || []
       return chat;
     } catch (error) {
       throw new Error("Failed to connect to MongoDB.");
