@@ -6,6 +6,7 @@ import { MongodbService } from "src/mongodb/mongodb.service";
 import { ImageGeneratorService } from "src/image-generator/image-generator.service";
 import { CloudVisionService } from "src/cloud-vision/cloud-vision.service";
 import { TelegramService } from "src/telegram/telegram.service";
+import { AudioProcessingService } from "src/audio-processing/audio-processing.service";
 
 @Module({
   controllers: [WebhookController],
@@ -16,6 +17,7 @@ import { TelegramService } from "src/telegram/telegram.service";
     ImageGeneratorService,
     CloudVisionService,
     TelegramService,
+    AudioProcessingService,
   ],
 })
 export class WebhookModule {}

@@ -7,6 +7,7 @@ import { GptService } from "./gpt/gpt.service";
 import { ImageGeneratorService } from "./image-generator/image-generator.service";
 import { CloudVisionService } from "./cloud-vision/cloud-vision.service";
 import { TelegramService } from "./telegram/telegram.service";
+import { AudioProcessingService } from "./audio-processing/audio-processing.service";
 
 @Module({
   imports: [WebhookModule],
@@ -18,6 +19,7 @@ import { TelegramService } from "./telegram/telegram.service";
     ImageGeneratorService,
     CloudVisionService,
     TelegramService,
+    AudioProcessingService,
   ],
 })
 export class AppModule {}

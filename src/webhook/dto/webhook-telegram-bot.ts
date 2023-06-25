@@ -5,6 +5,14 @@ export interface Photo {
   width: number;
   height: number;
 }
+
+export interface Voice {
+  file_id: string;
+  file_unique_id: string;
+  file_size: number;
+  duration: number;
+  mime_type: string;
+}
 export interface TelegramWebhookPayload {
   update_id: number;
   message: {
@@ -18,6 +26,7 @@ export interface TelegramWebhookPayload {
     };
     photo: Photo[];
     caption: string;
+    voice: Voice;
   };
 }
 
