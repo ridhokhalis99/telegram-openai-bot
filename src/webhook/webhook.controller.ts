@@ -33,7 +33,6 @@ export class WebhookController {
       let message: string;
       let imageUrl: string;
 
-
       switch (command) {
         case "/start":
           message = await this.gptService.generateText(prompt);
