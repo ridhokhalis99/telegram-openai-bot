@@ -14,7 +14,7 @@ export class ImageGeneratorService {
     this.openai = new OpenAIApi(configuration);
   }
 
-  async generateByPrompt(prompt: string) {
+  async generateByPrompt(prompt: string): Promise<string> {
     try {
       const promptWithoutCommand = prompt.split(" ").slice(1).join(" ");
       const response = await this.openai.createImage({
@@ -29,7 +29,7 @@ export class ImageGeneratorService {
     }
   }
 
-  async generateVariation(originalImageUrl: string) {
+  async generateVariation(originalImageUrl: string): Promise<string> {
     try {
       const response = await axios.get(originalImageUrl, {
         responseType: "stream",

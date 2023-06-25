@@ -9,10 +9,13 @@ export class CloudVisionService {
   }
 
   async detectText(fileBuffer: Buffer): Promise<string> {
-    const [result] = await this.vision.textDetection(fileBuffer);
-    const detections = result.textAnnotations;
-    const scannedTexts = detections[0].description.replace(/\n/g, "");
-
-    return scannedTexts;
+    try {
+      const [result] = await this.vision.textDetection(fileBuffer);
+      const detections = result.textAnnotations;
+      const scannedTexts = detections[0].description.replace(/\n/g, "");
+      return scannedTexts;
+    } catch (error) {
+      throw Error("Error in CloudVisionService");
+    }
   }
 }
