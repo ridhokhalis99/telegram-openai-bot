@@ -90,6 +90,7 @@ export class WebhookController {
     );
     await this.audioProcessingService.removeAudioFiles(telegramWebhookPayload);
     const message = await this.gptService.generateText(transcribedText, chat);
+    await this.mongodbService.saveChat(telegramWebhookPayload, message, transcribedText);
     return message;
   }
 
@@ -126,7 +127,6 @@ export class WebhookController {
 
     let message: string;
     let imageUrl: string;
-
     try {
       switch (command) {
         case "/start":

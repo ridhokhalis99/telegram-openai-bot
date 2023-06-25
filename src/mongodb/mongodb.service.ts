@@ -29,7 +29,8 @@ export class MongodbService {
 
   async saveChat(
     telegramWebhookPayload: TelegramWebhookPayload,
-    gptResponse?: string
+    gptResponse?: string,
+    transription?: string
   ): Promise<void> {
     try {
       await this.mongoClient.connect();
@@ -38,7 +39,8 @@ export class MongodbService {
       const { first_name, last_name, id } = telegramWebhookPayload.message.chat;
       const messageContent =
         telegramWebhookPayload.message.text ||
-        telegramWebhookPayload.message.caption;
+        telegramWebhookPayload.message.caption ||
+        transription
       if (!messageContent) return;
       const newMessage = {
         role: "user",
