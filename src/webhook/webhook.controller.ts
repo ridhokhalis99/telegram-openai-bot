@@ -28,10 +28,11 @@ export class WebhookController {
     try {
       const prompt = telegramWebhookPayload?.message?.text;
       const caption = telegramWebhookPayload?.message?.caption;
-      const command = prompt?.split(" ")[0] || caption.split(" ")[0];
+      const command = prompt?.split(" ")[0] || caption?.split(" ")[0];
       const photo = telegramWebhookPayload?.message?.photo;
       let message: string;
       let imageUrl: string;
+
 
       switch (command) {
         case "/start":
@@ -99,6 +100,7 @@ export class WebhookController {
 
       await this.webhookService.postWebhook(result);
     } catch (error) {
+      console.log("🚀 ~ file: webhook.controller.ts:102 ~ WebhookController ~ error:", error)
       throw Error("Error in WebhookController");
     }
   }
