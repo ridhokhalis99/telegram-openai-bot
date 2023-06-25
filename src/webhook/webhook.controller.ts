@@ -9,6 +9,7 @@ import { MongodbService } from "src/mongodb/mongodb.service";
 import { ImageGeneratorService } from "src/image-generator/image-generator.service";
 import { TelegramService } from "src/telegram/telegram.service";
 import { CloudVisionService } from "src/cloud-vision/cloud-vision.service";
+import { AudioProcessingService } from "src/audio-processing/audio-processing.service";
 
 @Controller("webhook")
 export class WebhookController {
@@ -18,17 +19,24 @@ export class WebhookController {
     private readonly mongodbService: MongodbService,
     private readonly imageGeneratorService: ImageGeneratorService,
     private readonly cloudVisionService: CloudVisionService,
-    private readonly telegramService: TelegramService
+    private readonly telegramService: TelegramService,
+    private readonly audioProcessingService: AudioProcessingService
   ) {}
 
   @Post("/")
   async postWebhook(
     @Body() telegramWebhookPayload: TelegramWebhookPayload
   ): Promise<void> {
+    let command: string;
     const prompt = telegramWebhookPayload?.message?.text;
     const caption = telegramWebhookPayload?.message?.caption;
-    const command = prompt?.split(" ")[0] || caption.split(" ")[0];
     const photo = telegramWebhookPayload?.message?.photo;
+    const voice = telegramWebhookPayload?.message?.voice;
+
+    if (voice) command = "/transcribe";
+    else command = prompt?.split(" ")[0] || caption?.split(" ")[0];
+    console.log("🚀 ~ file: webhook.controller.ts:38 ~ WebhookController ~ command:", command)
+
     let message: string;
     let imageUrl: string;
 
@@ -66,6 +74,14 @@ export class WebhookController {
           scannedTexts
         );
         this.mongodbService.saveChat(telegramWebhookPayload, message);
+        break;
+      case "/transcribe":
+        if (!voice) break;
+        const voiceFile = await this.telegramService.getVoiceFile(
+          voice.file_id
+        );
+        const transcribedText = await this.audioProcessingService.transcribe(voiceFile);
+
         break;
       case "/end":
         message = "Goodbye!, send /start to start a new session.";
