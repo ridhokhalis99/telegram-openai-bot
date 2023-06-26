@@ -10,6 +10,8 @@ Telegram OpenAI Bot is a powerful Telegram bot built using NestJS that integrate
 
 - **OCR with Google Cloud Vision:** The bot integrates with Google Cloud Vision OCR to extract text from images. Users can send images to the bot, and it will perform optical character recognition to extract any text present in the image. This feature is useful for digitizing printed text or capturing information from images.
 
+- **Voice Transcription:** The bot seamlessly integrates with Whisper-1, enabling users to send voice notes for effortless transcription. The bot accurately transcribes the audio, extracting words and converting them into text. This invaluable feature simplifies the process of capturing information from audio sources.
+
 ## Getting Started
 
 To set up and run the Telegram OpenAI Bot project, follow these steps:
@@ -47,6 +49,7 @@ The Telegram OpenAI Bot supports the following commands and interactions:
 - `/scan [description]`: Extract text from the provided image using optical character recognition and response to it.
 - `/help`: Get information on how to use the bot and its available commands.
 - `/end`: End the conversation with the bot.
+- `/transcribe`: Send a voice note without any commands to the bot, and it will perform transcription to extract words from the audio.
 
 ## Contributing
 
