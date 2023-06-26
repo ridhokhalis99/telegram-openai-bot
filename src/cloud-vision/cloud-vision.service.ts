@@ -5,7 +5,9 @@ import vision, { ImageAnnotatorClient } from "@google-cloud/vision";
 export class CloudVisionService {
   private vision: ImageAnnotatorClient;
   constructor() {
-    this.vision = new vision.ImageAnnotatorClient();
+    this.vision = new vision.ImageAnnotatorClient({
+      credentials: JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS),
+    });
   }
 
   async detectText(fileBuffer: Buffer): Promise<string> {
