@@ -57,9 +57,9 @@ Contributions to the Telegram OpenAI Bot project are welcome! If you have ideas 
 
 ## Disclaimer
 
-Please note that the Telegram OpenAI Bot is an open-source project developed independently and is not officially affiliated with OpenAI, DALL-E, Google Cloud Vision, or Telegram. While the bot strives to provide accurate and useful information, it may not always generate the desired results or exhibit perfect accuracy.
+Please note that the Telegram OpenAI Bot is an open-source project developed independently and is not officially affiliated with OpenAI, Google Cloud Vision, or Telegram. While the bot strives to provide accurate and useful information, it may not always generate the desired results or exhibit perfect accuracy.
 
-The bot's usage of OpenAI's GPT-3.5 model, DALL-E, and Google Cloud Vision OCR is subject to the terms and conditions set by the respective providers. Ensure that you comply with their usage policies and any applicable usage limits or costs.
+The bot's usage of OpenAI's GPT-3.5 model, DALL-E, Whisper-1, and Google Cloud Vision OCR is subject to the terms and conditions set by the respective providers. Ensure that you comply with their usage policies and any applicable usage limits or costs.
 
 The developers of the Telegram OpenAI Bot are not responsible for any misuse, damages, or liabilities resulting from the use of this bot. Use it at your own risk.
 
